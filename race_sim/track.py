@@ -1,5 +1,6 @@
 from PIL import Image
 import os
+import math
 
 class Track:
     def __init__(self, path):
@@ -20,6 +21,16 @@ class Track:
             return False
     
         return self.pixels[x, y] == (255, 255, 255)
+    
+    def cast_ray(self, start_x, start_y, theta, max_range=180, step_size=2):
+        for length in range(0, max_range+step_size, step_size):
+            nx = start_x + length * math.cos(theta)
+            ny = start_y + length * math.sin(theta)
+            
+            if not self.is_on_road(nx, ny):
+                return length
+            
+        return max_range
     
     def __str__(self) -> str:
         return f'Track file: {self.path}\nDimensions: {self.width}x{self.height}'
