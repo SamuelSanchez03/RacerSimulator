@@ -2,34 +2,33 @@
 import tkinter as tk
 from PIL import ImageTk
 from race_sim.types import CarState
+from race_sim.track import Track
 import math
 
 CAR_WIDTH = 22
 CAR_LENGTH = 14
 
 class Viewer():
-    def __init__(self, track):
+    def __init__(self, track: Track):
         self.root = tk.Tk()
         self.track = track
-        self.track_img = ImageTk.PhotoImage(track.img)
+        self.track_img = ImageTk.PhotoImage(self.track.img)
 
-        self.canvas = tk.Canvas(self.root, width=track.width, height=track.height)
-        self.root.title(track.path)
+        self.canvas = tk.Canvas(self.root, width=self.track.width, height=self.track.height)
+        self.root.title(self.track.path)
         self.canvas.create_image(0,0, image=self.track_img, anchor=tk.NW)
 
         self.canvas.pack()
         
-        car_state = CarState(275, 450, -math.pi/8, 0) 
-        self.render_car(car_state)
-        
-        self.root.mainloop()
-        
-    #def render_rays(self, state: CarState):
-        
+        #car_state = CarState(275, 450, -math.pi/8, 0) 
+        #self.render_car(car_state)
+
+    def update(self):
+        self.root.update()
+
     def render_car(self, state: CarState):
         x = state.x
         y = state.y
-        velocity = state.velocity
         theta = state.theta
         dx = CAR_WIDTH / 2
         dy = CAR_LENGTH / 2
@@ -48,10 +47,12 @@ class Viewer():
             x3, y3,
             x4, y4
         ]
+        
+        self.canvas.delete('car')
 
-        self.canvas.create_polygon(points, fill='red', outline='')
-        self.canvas.create_line(x, y, x + CAR_WIDTH/2 * c, y + CAR_WIDTH/2 * s, fill='green', arrow=tk.LAST)
+        self.canvas.create_polygon(points, fill='red', outline='', tags='car')
+        self.canvas.create_line(x, y, x + CAR_WIDTH/2 * c, y + CAR_WIDTH/2 * s, fill='green', arrow=tk.LAST, tags='car')
         
         for dw in [-math.pi/2, -math.pi/4, 0, math.pi/4, math.pi/2]:
             length = self.track.cast_ray(x, y, theta + dw)
-            self.canvas.create_line(x, y, x + length * math.cos(theta + dw), y + length * math.sin(theta + dw), fill='blue')
+            self.canvas.create_line(x, y, x + length * math.cos(theta + dw), y + length * math.sin(theta + dw), fill='blue', tags='car')

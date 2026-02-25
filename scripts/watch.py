@@ -1,17 +1,28 @@
 from race_sim.env import RaceEnv
 from agents.random_agent import RandomAgent
-from race_sim.track import Track
-from race_sim.viewer import Viewer
+import time
 
 def main():
     print("Starting simulation...")
-    env = RaceEnv()
-    env.reset()
+    env = RaceEnv('tracks/Track0.png')
     agent = RandomAgent()
-    agent.reset()
-    agent.act(None)
-    track = Track('tracks/Track0.png')
-    viewer = Viewer(track)
+    
+    for _ in range(1000):
+        obs = env.reset()
+        agent.reset()
+        
+        total_rewards = 0
+        while True:
+            action = agent.act(obs)
+            obs, reward, done = env.step(action)
+            env.render()
+            total_rewards += reward
+            time.sleep(0.05)
+            
+            if done:
+                print(f"Total rewards in episode: {total_rewards}")
+                time.sleep(2)
+                break
     
 if __name__ == "__main__":
     main()
