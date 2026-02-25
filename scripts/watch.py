@@ -8,11 +8,15 @@ def main():
     agent = RandomAgent()
     
     for _ in range(1000):
+        if env.viewer and not env.viewer.is_open:
+            break 
         obs = env.reset()
         agent.reset()
         
         total_rewards = 0
         while True:
+            if env.viewer and not env.viewer.is_open:
+                break 
             action = agent.act(obs)
             obs, reward, done = env.step(action)
             env.render()

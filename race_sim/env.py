@@ -1,24 +1,26 @@
 from race_sim.types import CarState, Action
 from race_sim.track import Track
 from race_sim.viewer import Viewer
+import numpy as np
+import numpy.typing as npt
 import math
 
 W = math.pi/18
 FRICTION = 0.95
 
 class RaceEnv: 
-    def __init__(self, track_path):
+    def __init__(self, track_path) -> None:
         self.track = Track(track_path)
         self.state = CarState(275, 450, 0, 0)
         self.viewer = None
         print(f"New env with track '{track_path}'")
         
-    def reset(self):
+    def reset(self) -> npt.NDArray[np.float64]:
         self.state = CarState(275, 450, 0, 0)
         print("Env reseted")
         return self.get_obs()
         
-    def get_obs(self):
+    def get_obs(self) -> npt.NDArray[np.float64]:
         x = self.state.x
         y = self.state.y
         theta = self.state.theta
@@ -30,9 +32,9 @@ class RaceEnv:
             obs.append(length/max_range)
         
         print(f"Observation: {obs}")
-        return obs
+        return np.array(obs, dtype=np.float64)
     
-    def step(self, action: Action):
+    def step(self, action: Action) -> tuple[npt.NDArray[np.float64], float, bool]:
         self.state.velocity = FRICTION * (self.state.velocity + action.throttle - action.brake)
         self.state.theta = self.state.theta + action.steer * W 
         
@@ -42,14 +44,14 @@ class RaceEnv:
         done = not self.track.is_on_road(self.state.x, self.state.y)
         
         if done:
-            reward = -100
+            reward = -100.0
         else:
             reward = self.state.velocity
         
         print(f"Step simulated with state: {self.state}\tReward: {reward}")
         return self.get_obs(), reward, done
     
-    def render(self):
+    def render(self) -> None:
         if not self.viewer:
             self.viewer = Viewer(self.track)   
         

@@ -6,7 +6,7 @@ class Action:
     throttle: float = 0.0
     brake: float = 0.0
     
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if not isinstance(self.steer, (int, float)):
             raise TypeError("Invalid action: steer must be a float.")
         if not isinstance(self.throttle, (int, float)):

@@ -5,12 +5,13 @@ from race_sim.types import CarState
 from race_sim.track import Track
 import math
 
-CAR_WIDTH = 22
-CAR_LENGTH = 14
+CAR_WIDTH = 14
+CAR_LENGTH = 22
 
 class Viewer():
-    def __init__(self, track: Track):
+    def __init__(self, track: Track) -> None:
         self.root = tk.Tk()
+        self.root.protocol("WM_DELETE_WINDOW", self.on_close)
         self.track = track
         self.track_img = ImageTk.PhotoImage(self.track.img)
 
@@ -19,19 +20,21 @@ class Viewer():
         self.canvas.create_image(0,0, image=self.track_img, anchor=tk.NW)
 
         self.canvas.pack()
+        self.is_open = True
         
-        #car_state = CarState(275, 450, -math.pi/8, 0) 
-        #self.render_car(car_state)
+    def on_close(self) -> None:
+        self.is_open = False
+        self.root.destroy()
 
-    def update(self):
+    def update(self) -> None:
         self.root.update()
 
-    def render_car(self, state: CarState):
+    def render_car(self, state: CarState) -> None:
         x = state.x
         y = state.y
         theta = state.theta
-        dx = CAR_WIDTH / 2
-        dy = CAR_LENGTH / 2
+        dx = CAR_LENGTH / 2
+        dy = CAR_WIDTH / 2
         
         c = math.cos(theta)
         s = math.sin(theta)
