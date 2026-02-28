@@ -7,6 +7,7 @@ class Agent(ABC):
     @abstractmethod
     def act(self, obs: npt.NDArray[np.float64]) -> Action:
         pass
+    
     @abstractmethod
     def reset(self, seed=None):
         pass

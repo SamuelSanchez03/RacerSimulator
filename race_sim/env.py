@@ -9,15 +9,20 @@ W = math.pi/18
 FRICTION = 0.95
 
 class RaceEnv: 
-    def __init__(self, track_path) -> None:
+    def __init__(self, track_path, verbose=False) -> None:
         self.track = Track(track_path)
         self.state = CarState(275, 450, 0, 0)
         self.viewer = None
-        print(f"New env with track '{track_path}'")
+        self.verbose = verbose
+        
+        if self.verbose:
+            print(f"New env with track '{track_path}'")
         
     def reset(self) -> npt.NDArray[np.float64]:
         self.state = CarState(275, 450, 0, 0)
-        print("Env reseted")
+        
+        if self.verbose:
+            print("Env reseted")
         return self.get_obs()
         
     def get_obs(self) -> npt.NDArray[np.float64]:
@@ -31,7 +36,8 @@ class RaceEnv:
             length = self.track.cast_ray(x, y, theta + dw, max_range=max_range)
             obs.append(length/max_range)
         
-        print(f"Observation: {obs}")
+        if self.verbose:
+            print(f"Observation: {obs}")
         return np.array(obs, dtype=np.float64)
     
     def step(self, action: Action) -> tuple[npt.NDArray[np.float64], float, bool]:
@@ -48,7 +54,8 @@ class RaceEnv:
         else:
             reward = self.state.velocity
         
-        print(f"Step simulated with state: {self.state}\tReward: {reward}")
+        if self.verbose:
+            print(f"Step simulated with state: {self.state}\tReward: {reward}")
         return self.get_obs(), reward, done
     
     def render(self) -> None:
