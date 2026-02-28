@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import numpy as np
 
 @dataclass
 class Action:
@@ -24,6 +25,9 @@ class Action:
             raise ValueError(f'Invalid action: throttle must be between 0 and 1.')
         if self.brake < 0.0 or self.brake > 1.0:
             raise ValueError(f'Invalid action: brake must be between 0 and 1.')
+        
+    def to_numpy(self):
+        return np.array([self.steer, self.throttle, self.brake], dtype=np.float64)
         
 @dataclass
 class CarState:

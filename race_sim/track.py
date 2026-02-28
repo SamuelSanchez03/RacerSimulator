@@ -1,6 +1,7 @@
 from PIL import Image
 import math
 import numpy as np
+from skimage.morphology import skeletonize
 
 class Track:
     def __init__(self, path) -> None:
@@ -14,11 +15,49 @@ class Track:
             mask = (img_array[:, :, 0] == 255) & (img_array[:, :, 1] == 255) & (img_array[:, :, 2] == 255)
             
             self.grid = mask
+            self.center_line_grid = self.extract_center_line()
+            
+            y_coords, x_coords = np.where(self.center_line_grid)
+            center_points = list(zip(x_coords, y_coords))
+            self.center_path = self.sort_center_points(center_points)
             
         except FileNotFoundError:
             raise FileNotFoundError(f"Error: The file '{self.path }' was not found. Please check the file path.")
         except IOError as e:
             raise IOError(f"Error: Could not open image file. {e}")
+        
+    def extract_center_line(self) -> np.ndarray:
+        return skeletonize(self.grid)
+    
+    def distance(self, point1: tuple[int, int], point2: tuple[int, int]) -> int:
+        return (point1[0] - point2[0])**2 + (point1[1] - point2[1])**2
+    
+    def sort_center_points(self, center_points: list) -> list:
+        ordered_points = [center_points.pop(0)]
+        
+        while center_points:
+            min_distance = 100000.0
+            closest_idx = 0
+            for i, point in enumerate(center_points):
+                current_distance = self.distance(point, ordered_points[-1])
+                if current_distance < min_distance:
+                    closest_idx = i
+                    min_distance = current_distance
+                
+            ordered_points.append(center_points.pop(closest_idx))
+            
+        return ordered_points
+    
+    def get_closest_waypoint_index(self, x: float, y: float) -> tuple[int, float]:
+        min_distance = 100000.0
+        closest_idx = 0
+        for i, waypoint in enumerate(self.center_path):
+            current_distance = self.distance((int(x), int(y)), waypoint)
+            if current_distance < min_distance:
+                closest_idx = i
+                min_distance = current_distance
+                
+        return closest_idx, min_distance
         
     def is_on_road(self, x: float, y: float) -> bool:
         x = int(round(x))
