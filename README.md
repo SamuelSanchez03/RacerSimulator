@@ -17,6 +17,7 @@ A 2D racing simulation environment designed for evaluating and training control 
 
 ## Project Structure
 
+```text
 RacerSimulator/
 ├── agents/
 │   └── random_agent.py      # Random action agent implementation
@@ -34,6 +35,7 @@ RacerSimulator/
 │   └── tracks.xcf           # Source file for tracks
 ├── requirements.txt         # Project dependencies
 └── .gitignore
+```
 
 ## Installation
 
