@@ -13,7 +13,7 @@ class Viewer():
         self.root = tk.Tk()
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
         self.track = track
-        self.track_img = ImageTk.PhotoImage(self.track.img)
+        self.track_img = ImageTk.PhotoImage(self.track.img, master=self.root)
 
         self.canvas = tk.Canvas(self.root, width=self.track.width, height=self.track.height)
         self.root.title(self.track.path)

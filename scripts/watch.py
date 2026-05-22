@@ -9,8 +9,8 @@ def main():
     training_tracks = ['tracks/Track0.png', 'tracks/Track1.png', 'tracks/Track2.png']
     testing_tracks = ['tracks/Track3.png', 'tracks/Track4.png'] 
     
-    max_episodes_per_track = 200 # Episodios por cada pista fácil
-    save_interval = 50           # Guardar el cerebro cada 50 episodios
+    max_episodes_per_track = 1000 # Episodios por cada pista fácil
+    save_interval = 100           # Guardar el cerebro cada 50 episodios
     
     print("Starting simulation...")
 
@@ -21,7 +21,7 @@ def main():
     
     agent = TestDQNAgent(state_size=state_size)
     
-    archivo_pesos = "../runs/pesos.pth"
+    archivo_pesos = "runs/pesos.pth"
     if os.path.exists(archivo_pesos):
         print(f"Cargando pesos previos desde {archivo_pesos}...")
         agent.load(archivo_pesos)
@@ -64,11 +64,11 @@ def main():
                 step_count += 1
                 
                 # Renderizar solo cuando ya está avanzado el entrenamiento
-                '''
-                if episode > (max_episodes_per_track - 1):
+                #'''
+                if episode > (max_episodes_per_track - 2):
                     env.render()
                     time.sleep(0.02) 
-                '''
+                #'''
                 
                 if done or step_count > 1000:
                     break
@@ -77,6 +77,10 @@ def main():
             
             if agent.eps > min_eps:
                 agent.eps = max(min_eps, agent.eps * eps_decay)
+                
+            if env.viewer and env.viewer.is_open:
+                env.viewer.root.destroy()
+                env.viewer = None
                 
             # GUARDADO PERIÓDICO
             if (episode + 1) % save_interval == 0:
