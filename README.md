@@ -121,10 +121,3 @@ Processes the track image to establish navigable boundaries.
 #### `Agent` Class (`race_sim/agent.py`)
 Base class for implementing logic controllers.
 * `act(self, obs: npt.NDArray[np.float64]) -> Action`: (Abstract) Defines how the agent maps observations to actions.
-* `reset(self, seed=None)`: (Abstract) Resets the internal state of the agent.
-
-## Upcoming Rendering Features
-
-To improve the visual fidelity and functionality of the `Viewer` in the simulator, the following elements are pending implementation:
-
-* **User Interface (HUD):** Displaying an on-screen speedometer, steering angle indicator, braking status, and current reward.

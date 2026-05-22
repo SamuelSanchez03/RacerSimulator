@@ -35,3 +35,6 @@ class CarState:
     y: float
     theta: float
     velocity: float = 0.0
+    
+    def to_numpy(self):
+        return np.array([self.x, self.y, self.theta, self.velocity], dtype=np.float64)

@@ -9,5 +9,9 @@ class Agent(ABC):
         pass
     
     @abstractmethod
-    def reset(self, seed=None):
+    def save(self, filepath: str):
+        pass
+    
+    @abstractmethod
+    def load(self, filepath: str):
         pass

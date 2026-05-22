@@ -18,7 +18,3 @@ class RandomAgent(Agent):
         if self.verbose:
             print(f"Action: {action}")
         return action
-        
-    def reset(self, seed=None):
-        if self.verbose:
-            print("Random Agent restarted")
